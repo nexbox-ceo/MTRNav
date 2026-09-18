@@ -30,15 +30,18 @@ jobs:
       - name: Build MTRNav
         run: gradle build --stacktrace --info
 
-      - name: List build output
-        if: always()
+      - name: Check for built JAR
         run: |
-          echo "=== build directory ==="
-          find build -maxdepth 3 -type f -print 2>/dev/null || true
+          echo "=== build/libs ==="
+          ls -lah build/libs
+          echo "=== JAR files ==="
+          find build/libs -maxdepth 1 -type f -name '*.jar' -print
+          test -n "$(find build/libs -maxdepth 1 -type f -name '*.jar' -print -quit)"
 
       - name: Upload MTRNav JAR
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: mtrnav-jar
           path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14
