@@ -18,15 +18,26 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.5'
+      - name: Install Gradle
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
+          unzip -q gradle-8.5-bin.zip -d "$HOME"
+          echo "$HOME/gradle-8.5/bin" >> "$GITHUB_PATH"
 
-      - name: Build with Gradle
-        run: gradle build
+      - name: Check Gradle
+        run: gradle --version
+
+      - name: Build MTRNav
+        run: gradle build --stacktrace --info
+
+      - name: List build output
+        if: always()
+        run: |
+          echo "=== build directory ==="
+          find build -maxdepth 3 -type f -print 2>/dev/null || true
 
       - name: Upload MTRNav JAR
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: mtrnav-jar
