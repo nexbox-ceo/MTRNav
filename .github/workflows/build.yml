@@ -28,9 +28,11 @@ jobs:
         run: gradle --version
 
       - name: Build MTRNav
+        working-directory: MTRNav 4
         run: gradle build --stacktrace --info
 
       - name: Check for built JAR
+        working-directory: MTRNav 4
         run: |
           echo "=== build/libs ==="
           ls -lah build/libs
@@ -42,6 +44,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mtrnav-jar
-          path: build/libs/*.jar
+          path: MTRNav 4/build/libs/*.jar
           if-no-files-found: error
           retention-days: 14
